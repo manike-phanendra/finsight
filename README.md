@@ -343,11 +343,10 @@ node testEndpoints.js
 
 ## 12. Deployment Guide
 
-### Frontend Deployment on Vercel
-1. Push source code to GitHub repository.
-2. In the Vercel Dashboard, import the repository and set the **Root Directory** to `frontend`.
-3. Set Build Command to `npm run build` and Output Directory to `dist`.
-4. Deploy! Single Page Application route rewrites are automatically configured via `frontend/vercel.json`.
+### Live Production Deployment
+- **Frontend (Vercel):** [https://frontend-lac-three-29.vercel.app](https://frontend-lac-three-29.vercel.app)
+- **Vercel Dashboard Inspection:** [https://vercel.com/phani21/frontend](https://vercel.com/phani21/frontend)
+- **GitHub Repository:** [https://github.com/manike-phanendra/finsight](https://github.com/manike-phanendra/finsight)
 
 ### Backend Deployment on Render
 1. Create a **Web Service** on Render and connect the repository.
