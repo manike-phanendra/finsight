@@ -4,8 +4,12 @@ import { clientApiHandler, initClientStore } from './clientStorage';
 // Pre-initialize client store
 initClientStore();
 
+const API_BASE = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
+  : '/api';
+
 const axiosInstance = axios.create({
-  baseURL: '/api',
+  baseURL: API_BASE,
   headers: {
     'Content-Type': 'application/json',
   },
