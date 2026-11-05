@@ -1,0 +1,8 @@
+{
+  "name": "finsight-presentation-generator",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "dependencies": {
+    "pptxgenjs": "^3.12.0"
+  }
+}
