@@ -9,7 +9,7 @@ import {
   ReceiptText,
   Calendar,
   CreditCard,
-  DollarSign,
+  IndianRupee,
   ArrowUpDown,
   Download,
 } from 'lucide-react';
@@ -303,7 +303,7 @@ const TransactionsPage = () => {
                             : 'text-slate-900 dark:text-white'
                         }
                       >
-                        {tx.type === 'income' ? '+' : '-'}${Number(tx.amount).toFixed(2)}
+                        {tx.type === 'income' ? '+' : '-'}₹{Number(tx.amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </td>
                     <td className="py-3.5 px-4 text-center whitespace-nowrap">

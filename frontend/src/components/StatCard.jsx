@@ -35,7 +35,7 @@ const StatCard = ({ title, amount, change, changeType, icon: Icon, color = 'blue
       <div className="flex items-baseline justify-between">
         <div>
           <h3 className="text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-            ${Number(amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            ₹{Number(amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </h3>
           {subtitle && (
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{subtitle}</p>

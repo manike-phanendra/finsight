@@ -155,23 +155,23 @@ const LandingPage = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
                 <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                   <p className="text-xs text-slate-400">Total Balance</p>
-                  <p className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-1">$23,925.00</p>
+                  <p className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-1">₹2,48,500.00</p>
                   <span className="text-[10px] font-semibold text-emerald-500">+12.4% vs last mo</span>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                   <p className="text-xs text-slate-400">Monthly Income</p>
-                  <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">$6,470.00</p>
+                  <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">₹75,000.00</p>
                   <span className="text-[10px] font-semibold text-emerald-500">Tech & Freelance</span>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                   <p className="text-xs text-slate-400">Monthly Expenses</p>
-                  <p className="text-xl sm:text-2xl font-bold text-rose-600 dark:text-rose-400 mt-1">$2,455.00</p>
+                  <p className="text-xl sm:text-2xl font-bold text-rose-600 dark:text-rose-400 mt-1">₹28,500.00</p>
                   <span className="text-[10px] font-semibold text-rose-500">Within Budget</span>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                   <p className="text-xs text-slate-400">Savings Target</p>
                   <p className="text-xl sm:text-2xl font-bold text-violet-600 dark:text-violet-400 mt-1">72%</p>
-                  <span className="text-[10px] font-semibold text-violet-500">$7,200 / $10,000</span>
+                  <span className="text-[10px] font-semibold text-violet-500">₹72,000 / ₹1,00,000</span>
                 </div>
               </div>
             </div>

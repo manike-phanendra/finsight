@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   ArrowLeft,
-  DollarSign,
+  IndianRupee,
   Calendar,
   CreditCard,
   FileText,
@@ -154,10 +154,10 @@ const AddTransactionPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">
-                Amount ($ USD)
+                Amount (₹ INR)
               </label>
               <div className="relative">
-                <DollarSign className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                <IndianRupee className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                 <input
                   type="number"
                   step="0.01"

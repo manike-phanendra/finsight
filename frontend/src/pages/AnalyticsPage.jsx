@@ -21,7 +21,7 @@ import {
   TrendingUp,
   PieChart as PieIcon,
   Calendar,
-  DollarSign,
+  IndianRupee,
   ArrowUpRight,
   ArrowDownRight,
   PiggyBank,
@@ -103,7 +103,7 @@ const AnalyticsPage = () => {
         <div className="p-6 rounded-3xl bg-white dark:bg-[#111c3a] border border-slate-200 dark:border-slate-800 shadow-sm">
           <span className="text-xs font-semibold text-slate-400">Total Net Savings</span>
           <p className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
-            ${(cards.totalSavings || 0).toLocaleString()}
+            ₹{(cards.totalSavings || 0).toLocaleString('en-IN')}
           </p>
           <span className="text-[11px] font-bold text-emerald-500 mt-1 inline-block">
             Savings Rate: {cards.savingsRate || 0}% of total income
@@ -117,10 +117,10 @@ const AnalyticsPage = () => {
               (cards.thisMonthBalance || 0) >= 0 ? 'text-emerald-500' : 'text-rose-500'
             }`}
           >
-            ${(cards.thisMonthBalance || 0).toLocaleString()}
+            ₹{(cards.thisMonthBalance || 0).toLocaleString('en-IN')}
           </p>
           <span className="text-[11px] text-slate-400 mt-1 inline-block">
-            ${(cards.thisMonthIncome || 0).toLocaleString()} In vs ${(cards.thisMonthExpenses || 0).toLocaleString()} Out
+            ₹{(cards.thisMonthIncome || 0).toLocaleString('en-IN')} In vs ₹{(cards.thisMonthExpenses || 0).toLocaleString('en-IN')} Out
           </span>
         </div>
 
@@ -130,7 +130,7 @@ const AnalyticsPage = () => {
             {categoryData[0]?.name || 'N/A'}
           </p>
           <span className="text-[11px] text-slate-400 mt-1 inline-block">
-            ${(categoryData[0]?.amount || 0).toLocaleString()} ({categoryData[0]?.percentage || 0}% of expenses)
+            ₹{(categoryData[0]?.amount || 0).toLocaleString('en-IN')} ({categoryData[0]?.percentage || 0}% of expenses)
           </span>
         </div>
       </div>
@@ -158,7 +158,7 @@ const AnalyticsPage = () => {
                 tickLine={false}
                 axisLine={false}
                 tick={{ fill: '#94a3b8', fontSize: 12 }}
-                tickFormatter={(v) => `$${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`}
+                tickFormatter={(v) => `₹${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`}
               />
               <Tooltip
                 contentStyle={{
@@ -168,7 +168,7 @@ const AnalyticsPage = () => {
                   color: '#fff',
                   fontSize: '12px',
                 }}
-                formatter={(val) => [`$${Number(val).toLocaleString()}`, '']}
+                formatter={(val) => [`₹${Number(val).toLocaleString('en-IN')}`, '']}
               />
               <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} iconType="circle" />
               <Bar dataKey="income" name="Total Inflow" fill="#2563EB" radius={[6, 6, 0, 0]} barSize={24} />
@@ -198,7 +198,7 @@ const AnalyticsPage = () => {
                   tickLine={false}
                   axisLine={false}
                   tick={{ fill: '#94a3b8', fontSize: 12 }}
-                  tickFormatter={(v) => `$${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`}
+                  tickFormatter={(v) => `₹${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`}
                 />
                 <Tooltip
                   contentStyle={{
@@ -208,7 +208,7 @@ const AnalyticsPage = () => {
                     color: '#fff',
                     fontSize: '12px',
                   }}
-                  formatter={(val) => [`$${Number(val).toLocaleString()}`, '']}
+                  formatter={(val) => [`₹${Number(val).toLocaleString('en-IN')}`, '']}
                 />
                 <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
                 <Line
@@ -267,7 +267,7 @@ const AnalyticsPage = () => {
                     color: '#fff',
                     fontSize: '12px',
                   }}
-                  formatter={(val) => [`$${Number(val).toLocaleString()}`, 'Spent']}
+                  formatter={(val) => [`₹${Number(val).toLocaleString('en-IN')}`, 'Spent']}
                 />
                 <Legend
                   wrapperStyle={{ fontSize: '11px', maxHeight: '70px', overflowY: 'auto' }}

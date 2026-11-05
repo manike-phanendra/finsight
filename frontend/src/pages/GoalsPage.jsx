@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Target,
   Plus,
-  DollarSign,
+  IndianRupee,
   Calendar,
   CheckCircle2,
   Clock,
@@ -107,10 +107,10 @@ const GoalsPage = () => {
             </span>
             <div className="flex items-baseline space-x-3 mt-1">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-                ${summary.totalSaved.toLocaleString()}
+                ₹{summary.totalSaved.toLocaleString('en-IN')}
               </h2>
               <span className="text-xs text-slate-400">
-                accumulated of ${summary.totalTarget.toLocaleString()} target
+                accumulated of ₹{summary.totalTarget.toLocaleString('en-IN')} target
               </span>
             </div>
           </div>
@@ -176,16 +176,16 @@ const GoalsPage = () => {
                 <div className="mt-5 flex items-baseline justify-between">
                   <div>
                     <span className="text-xl font-extrabold text-slate-900 dark:text-white">
-                      ${Number(goal.savedAmount).toLocaleString()}
+                      ₹{Number(goal.savedAmount).toLocaleString('en-IN')}
                     </span>
                     <span className="text-xs text-slate-400 ml-1">
-                      / ${Number(goal.targetAmount).toLocaleString()}
+                      / ₹{Number(goal.targetAmount).toLocaleString('en-IN')}
                     </span>
                   </div>
                   <span className="text-[11px] text-slate-400">
                     {goal.isCompleted
                       ? 'Target Hit'
-                      : `$${goal.remainingAmount.toLocaleString()} to go`}
+                      : `₹${Number(goal.remainingAmount).toLocaleString('en-IN')} to go`}
                   </span>
                 </div>
 
@@ -212,7 +212,7 @@ const GoalsPage = () => {
                   onClick={() => handleDeposit(goal)}
                   className="px-3 py-1.5 rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 hover:bg-brand-100 dark:hover:bg-brand-500/20 text-xs font-semibold flex items-center space-x-1 transition"
                 >
-                  <DollarSign className="w-3.5 h-3.5" />
+                  <IndianRupee className="w-3.5 h-3.5" />
                   <span>Add Funds</span>
                 </button>
 

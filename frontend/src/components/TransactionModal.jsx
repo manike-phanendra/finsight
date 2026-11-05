@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, DollarSign, Calendar, Tag, CreditCard, FileText } from 'lucide-react';
+import { X, IndianRupee, Calendar, Tag, CreditCard, FileText } from 'lucide-react';
 import api from '../services/api';
 
 const TransactionModal = ({ isOpen, onClose, transaction, onSaved }) => {
@@ -143,10 +143,10 @@ const TransactionModal = ({ isOpen, onClose, transaction, onSaved }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">
-                Amount ($)
+                Amount (₹ INR)
               </label>
               <div className="relative">
-                <DollarSign className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <IndianRupee className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                 <input
                   type="number"
                   step="0.01"

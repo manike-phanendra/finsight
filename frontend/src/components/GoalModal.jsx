@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Target, DollarSign, Calendar, TrendingUp } from 'lucide-react';
+import { X, Target, IndianRupee, Calendar, TrendingUp } from 'lucide-react';
 import api from '../services/api';
 
 const GoalModal = ({ isOpen, onClose, goal, mode = 'create', onSaved }) => {
@@ -87,7 +87,7 @@ const GoalModal = ({ isOpen, onClose, goal, mode = 'create', onSaved }) => {
                 <div className="flex justify-between text-xs mb-1">
                   <span className="text-slate-500">Current Progress</span>
                   <span className="font-bold text-slate-900 dark:text-white">
-                    ${goal?.savedAmount} / ${goal?.targetAmount} ({goal?.progressPercentage}%)
+                    ₹{Number(goal?.savedAmount || 0).toLocaleString('en-IN')} / ₹{Number(goal?.targetAmount || 0).toLocaleString('en-IN')} ({goal?.progressPercentage}%)
                   </span>
                 </div>
                 <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
@@ -99,10 +99,10 @@ const GoalModal = ({ isOpen, onClose, goal, mode = 'create', onSaved }) => {
               </div>
 
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">
-                Deposit Amount ($)
+                Deposit Amount (₹ INR)
               </label>
               <div className="relative">
-                <DollarSign className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <IndianRupee className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                 <input
                   type="number"
                   step="1"
@@ -135,16 +135,16 @@ const GoalModal = ({ isOpen, onClose, goal, mode = 'create', onSaved }) => {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">
-                    Target Amount ($)
+                    Target Amount (₹ INR)
                   </label>
                   <div className="relative">
-                    <DollarSign className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                    <IndianRupee className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                     <input
                       type="number"
                       step="1"
                       min="1"
                       required
-                      placeholder="5000"
+                      placeholder="50000"
                       value={formData.targetAmount}
                       onChange={(e) => setFormData({ ...formData, targetAmount: e.target.value })}
                       className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
@@ -154,10 +154,10 @@ const GoalModal = ({ isOpen, onClose, goal, mode = 'create', onSaved }) => {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">
-                    Initial Saved ($)
+                    Initial Saved (₹ INR)
                   </label>
                   <div className="relative">
-                    <DollarSign className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                    <IndianRupee className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                     <input
                       type="number"
                       step="1"

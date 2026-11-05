@@ -64,7 +64,7 @@ const NotificationsDropdown = ({ budgetAlerts = [] }) => {
                       </p>
                       <p className="text-slate-500 dark:text-slate-400 mt-0.5">
                         {alert.isOver
-                          ? `You exceeded your budget by $${alert.exceeded.toFixed(2)} (${alert.percentage}% used).`
+                          ? `You exceeded your budget by ₹${Number(alert.exceeded).toLocaleString('en-IN', { minimumFractionDigits: 2 })} (${alert.percentage}% used).`
                           : `You've used ${alert.percentage}% of your monthly ${alert.category} budget.`}
                       </p>
                       <Link

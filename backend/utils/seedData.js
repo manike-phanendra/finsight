@@ -64,7 +64,7 @@ const seedDemoUserAndData = async () => {
         sampleTransactions.push({
           userId: user._id,
           title: 'Monthly Tech Salary',
-          amount: 5400,
+          amount: 75000,
           type: 'income',
           category: 'Salary',
           paymentMethod: 'Bank Transfer',
@@ -76,7 +76,7 @@ const seedDemoUserAndData = async () => {
         sampleTransactions.push({
           userId: user._id,
           title: 'UI/UX Design Consulting',
-          amount: 850 + (i * 50),
+          amount: 18500 + (i * 1500),
           type: 'income',
           category: 'Freelance',
           paymentMethod: 'Stripe',
@@ -88,7 +88,7 @@ const seedDemoUserAndData = async () => {
         sampleTransactions.push({
           userId: user._id,
           title: 'Apartment Monthly Rent',
-          amount: 1450,
+          amount: 22000,
           type: 'expense',
           category: 'Rent & Housing',
           paymentMethod: 'Bank Transfer',
@@ -100,7 +100,7 @@ const seedDemoUserAndData = async () => {
         sampleTransactions.push({
           userId: user._id,
           title: 'High-speed Fiber & Electric',
-          amount: 180 + (i * 10),
+          amount: 3200 + (i * 150),
           type: 'expense',
           category: 'Utilities',
           paymentMethod: 'Card',
@@ -112,7 +112,7 @@ const seedDemoUserAndData = async () => {
         sampleTransactions.push({
           userId: user._id,
           title: 'Organic Supermarket Groceries',
-          amount: 320 + (i * 15),
+          amount: 8500 + (i * 350),
           type: 'expense',
           category: 'Food & Dining',
           paymentMethod: 'Card',
@@ -123,7 +123,7 @@ const seedDemoUserAndData = async () => {
         sampleTransactions.push({
           userId: user._id,
           title: 'Bistro & Specialty Coffee',
-          amount: 110 + (i * 8),
+          amount: 3400 + (i * 200),
           type: 'expense',
           category: 'Food & Dining',
           paymentMethod: 'Card',
@@ -135,7 +135,7 @@ const seedDemoUserAndData = async () => {
         sampleTransactions.push({
           userId: user._id,
           title: 'Metro Pass & Rideshare',
-          amount: 140,
+          amount: 2500,
           type: 'expense',
           category: 'Transportation',
           paymentMethod: 'Card',
@@ -147,7 +147,7 @@ const seedDemoUserAndData = async () => {
         sampleTransactions.push({
           userId: user._id,
           title: 'Streaming & Concert Tickets',
-          amount: 95,
+          amount: 1800,
           type: 'expense',
           category: 'Entertainment',
           paymentMethod: 'Card',
@@ -160,18 +160,18 @@ const seedDemoUserAndData = async () => {
       sampleTransactions.push({
         userId: user._id,
         title: 'Dividend Payout - Index Fund',
-        amount: 220,
+        amount: 6500,
         type: 'income',
         category: 'Investments',
         paymentMethod: 'Bank Transfer',
         date: new Date(currentYear, currentMonth, 3, 11, 0),
-        description: 'Quarterly dividend distribution from S&P index',
+        description: 'Quarterly dividend distribution from Nifty index',
       });
 
       sampleTransactions.push({
         userId: user._id,
         title: 'New Noise-Cancelling Headphones',
-        amount: 280,
+        amount: 18500,
         type: 'expense',
         category: 'Shopping',
         paymentMethod: 'Card',
@@ -187,42 +187,42 @@ const seedDemoUserAndData = async () => {
         {
           userId: user._id,
           category: 'Food & Dining',
-          amount: 550,
+          amount: 14000,
           month: currentMonthNum,
           year: currentYear,
         },
         {
           userId: user._id,
           category: 'Rent & Housing',
-          amount: 1500,
+          amount: 25000,
           month: currentMonthNum,
           year: currentYear,
         },
         {
           userId: user._id,
           category: 'Transportation',
-          amount: 200,
+          amount: 4000,
           month: currentMonthNum,
           year: currentYear,
         },
         {
           userId: user._id,
           category: 'Entertainment',
-          amount: 150,
+          amount: 3000,
           month: currentMonthNum,
           year: currentYear,
         },
         {
           userId: user._id,
           category: 'Shopping',
-          amount: 250, // Note: $280 spent will trigger the overspending alert!
+          amount: 15000, // Note: ₹18,500 spent will trigger the overspending alert!
           month: currentMonthNum,
           year: currentYear,
         },
         {
           userId: user._id,
           category: 'Utilities',
-          amount: 220,
+          amount: 4500,
           month: currentMonthNum,
           year: currentYear,
         },
@@ -241,29 +241,29 @@ const seedDemoUserAndData = async () => {
         {
           userId: user._id,
           title: 'Emergency Safety Reserve',
-          targetAmount: 10000,
-          savedAmount: 7200,
+          targetAmount: 300000,
+          savedAmount: 215000,
           deadline: new Date(currentYear, 11, 31),
         },
         {
           userId: user._id,
           title: 'Japan Autumn Vacation',
-          targetAmount: 3500,
-          savedAmount: 2450,
+          targetAmount: 180000,
+          savedAmount: 125000,
           deadline: new Date(currentYear, 9, 15),
         },
         {
           userId: user._id,
           title: 'MacBook Pro M4 Workstation',
-          targetAmount: 2200,
-          savedAmount: 1650,
+          targetAmount: 150000,
+          savedAmount: 95000,
           deadline: new Date(currentYear, 7, 30),
         },
         {
           userId: user._id,
           title: 'Tech Certification & Training',
-          targetAmount: 800,
-          savedAmount: 800, // Completed goal demo
+          targetAmount: 25000,
+          savedAmount: 25000, // Completed goal demo
           deadline: new Date(currentYear, 5, 1),
         },
       ];

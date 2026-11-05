@@ -7,7 +7,7 @@ const STORAGE_KEYS = {
   BUDGETS: 'finsight_store_budgets',
   GOALS: 'finsight_store_goals',
   CATEGORIES: 'finsight_store_categories',
-  INIT: 'finsight_store_initialized',
+  INIT: 'finsight_store_initialized_inr_v2',
 };
 
 const getFromStore = (key, fallback = []) => {
@@ -74,7 +74,7 @@ export const initClientStore = () => {
       {
         _id: `tx_sal_${i}`,
         title: 'Monthly Tech Salary',
-        amount: 5400,
+        amount: 75000,
         type: 'income',
         category: 'Salary',
         paymentMethod: 'Bank Transfer',
@@ -84,7 +84,7 @@ export const initClientStore = () => {
       {
         _id: `tx_free_${i}`,
         title: 'UI/UX Design Consulting',
-        amount: 850 + i * 50,
+        amount: 18500 + i * 1500,
         type: 'income',
         category: 'Freelance',
         paymentMethod: 'Stripe',
@@ -94,7 +94,7 @@ export const initClientStore = () => {
       {
         _id: `tx_rent_${i}`,
         title: 'Apartment Monthly Rent',
-        amount: 1450,
+        amount: 22000,
         type: 'expense',
         category: 'Rent & Housing',
         paymentMethod: 'Bank Transfer',
@@ -104,7 +104,7 @@ export const initClientStore = () => {
       {
         _id: `tx_util_${i}`,
         title: 'High-speed Fiber & Electric',
-        amount: 180 + i * 10,
+        amount: 3200 + i * 150,
         type: 'expense',
         category: 'Utilities',
         paymentMethod: 'Card',
@@ -114,7 +114,7 @@ export const initClientStore = () => {
       {
         _id: `tx_groc_${i}`,
         title: 'Organic Supermarket Groceries',
-        amount: 320 + i * 15,
+        amount: 8500 + i * 350,
         type: 'expense',
         category: 'Food & Dining',
         paymentMethod: 'Card',
@@ -124,7 +124,7 @@ export const initClientStore = () => {
       {
         _id: `tx_dine_${i}`,
         title: 'Bistro & Specialty Coffee',
-        amount: 110 + i * 8,
+        amount: 3400 + i * 200,
         type: 'expense',
         category: 'Food & Dining',
         paymentMethod: 'Card',
@@ -134,7 +134,7 @@ export const initClientStore = () => {
       {
         _id: `tx_trans_${i}`,
         title: 'Metro Pass & Rideshare',
-        amount: 140,
+        amount: 2500,
         type: 'expense',
         category: 'Transportation',
         paymentMethod: 'Card',
@@ -144,7 +144,7 @@ export const initClientStore = () => {
       {
         _id: `tx_ent_${i}`,
         title: 'Streaming & Concert Tickets',
-        amount: 95,
+        amount: 1800,
         type: 'expense',
         category: 'Entertainment',
         paymentMethod: 'Card',
@@ -159,17 +159,17 @@ export const initClientStore = () => {
     {
       _id: 'tx_inv_curr',
       title: 'Dividend Payout - Index Fund',
-      amount: 220,
+      amount: 6500,
       type: 'income',
       category: 'Investments',
       paymentMethod: 'Bank Transfer',
       date: new Date(currentYear, currentMonth, 3, 11, 0).toISOString(),
-      description: 'Quarterly dividend distribution from S&P index',
+      description: 'Quarterly dividend distribution from Nifty index',
     },
     {
       _id: 'tx_shop_curr',
       title: 'Noise-Cancelling Headphones',
-      amount: 280,
+      amount: 18500,
       type: 'expense',
       category: 'Shopping',
       paymentMethod: 'Card',
@@ -181,12 +181,12 @@ export const initClientStore = () => {
 
   // 4. Seed Budgets
   const sampleBudgets = [
-    { _id: 'b_1', category: 'Food & Dining', amount: 550, month: currentMonth + 1, year: currentYear },
-    { _id: 'b_2', category: 'Rent & Housing', amount: 1500, month: currentMonth + 1, year: currentYear },
-    { _id: 'b_3', category: 'Transportation', amount: 200, month: currentMonth + 1, year: currentYear },
-    { _id: 'b_4', category: 'Entertainment', amount: 150, month: currentMonth + 1, year: currentYear },
-    { _id: 'b_5', category: 'Shopping', amount: 250, month: currentMonth + 1, year: currentYear }, // Overspent ($280 spent)
-    { _id: 'b_6', category: 'Utilities', amount: 220, month: currentMonth + 1, year: currentYear },
+    { _id: 'b_1', category: 'Food & Dining', amount: 14000, month: currentMonth + 1, year: currentYear },
+    { _id: 'b_2', category: 'Rent & Housing', amount: 25000, month: currentMonth + 1, year: currentYear },
+    { _id: 'b_3', category: 'Transportation', amount: 4000, month: currentMonth + 1, year: currentYear },
+    { _id: 'b_4', category: 'Entertainment', amount: 3000, month: currentMonth + 1, year: currentYear },
+    { _id: 'b_5', category: 'Shopping', amount: 15000, month: currentMonth + 1, year: currentYear }, // Overspent (₹18,500 spent)
+    { _id: 'b_6', category: 'Utilities', amount: 4500, month: currentMonth + 1, year: currentYear },
   ];
   saveToStore(STORAGE_KEYS.BUDGETS, sampleBudgets);
 
@@ -195,29 +195,29 @@ export const initClientStore = () => {
     {
       _id: 'g_1',
       title: 'Emergency Safety Reserve',
-      targetAmount: 10000,
-      savedAmount: 7200,
+      targetAmount: 300000,
+      savedAmount: 215000,
       deadline: new Date(currentYear, 11, 31).toISOString(),
     },
     {
       _id: 'g_2',
       title: 'Japan Autumn Vacation',
-      targetAmount: 3500,
-      savedAmount: 2450,
+      targetAmount: 180000,
+      savedAmount: 125000,
       deadline: new Date(currentYear, 9, 15).toISOString(),
     },
     {
       _id: 'g_3',
       title: 'MacBook Pro M4 Workstation',
-      targetAmount: 2200,
-      savedAmount: 1650,
+      targetAmount: 150000,
+      savedAmount: 95000,
       deadline: new Date(currentYear, 7, 30).toISOString(),
     },
     {
       _id: 'g_4',
       title: 'Tech Certification & Training',
-      targetAmount: 800,
-      savedAmount: 800,
+      targetAmount: 25000,
+      savedAmount: 25000,
       deadline: new Date(currentYear, 5, 1).toISOString(),
     },
   ];

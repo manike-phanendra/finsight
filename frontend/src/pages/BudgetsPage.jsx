@@ -5,7 +5,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   Calendar,
-  DollarSign,
+  IndianRupee,
   TrendingUp,
   Trash2,
   Edit2,
@@ -136,9 +136,9 @@ const BudgetsPage = () => {
               <ul className="list-disc list-inside mt-2 space-y-1">
                 {overBudgetItems.map((item) => (
                   <li key={item._id}>
-                    <span className="font-semibold">{item.category}:</span> Spent ${item.spentAmount} of ${item.amount} limit (
+                    <span className="font-semibold">{item.category}:</span> Spent ₹{Number(item.spentAmount).toLocaleString('en-IN')} of ₹{Number(item.amount).toLocaleString('en-IN')} limit (
                     <span className="font-extrabold text-rose-500">
-                      ${(item.spentAmount - item.amount).toFixed(2)} over budget ({item.percentage}%)
+                      ₹{Number(item.spentAmount - item.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })} over budget ({item.percentage}%)
                     </span>)
                   </li>
                 ))}
@@ -181,10 +181,10 @@ const BudgetsPage = () => {
             </span>
             <div className="flex items-baseline space-x-3 mt-1">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-                ${summary.totalSpentInBudgets.toLocaleString()}
+                ₹{summary.totalSpentInBudgets.toLocaleString('en-IN')}
               </h2>
               <span className="text-xs text-slate-400">
-                spent of ${summary.totalBudgeted.toLocaleString()} limit
+                spent of ₹{summary.totalBudgeted.toLocaleString('en-IN')} limit
               </span>
             </div>
           </div>
@@ -254,9 +254,9 @@ const BudgetsPage = () => {
                 <div className="mt-4 flex items-baseline justify-between">
                   <div>
                     <span className="text-xl font-extrabold text-slate-900 dark:text-white">
-                      ${b.spentAmount.toLocaleString()}
+                      ₹{b.spentAmount.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-xs text-slate-400 ml-1">/ ${b.amount.toLocaleString()}</span>
+                    <span className="text-xs text-slate-400 ml-1">/ ₹{b.amount.toLocaleString('en-IN')}</span>
                   </div>
                   <span className="text-xs font-bold text-slate-500">{b.percentage}%</span>
                 </div>
@@ -278,8 +278,8 @@ const BudgetsPage = () => {
                 <div className="flex justify-between text-[11px] text-slate-400 mt-2">
                   <span>
                     {b.isOverBudget
-                      ? `Exceeded by $${(b.spentAmount - b.amount).toFixed(2)}`
-                      : `Remaining: $${b.remainingAmount.toFixed(2)}`}
+                      ? `Exceeded by ₹${Number(b.spentAmount - b.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+                      : `Remaining: ₹${Number(b.remainingAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`}
                   </span>
                 </div>
               </div>

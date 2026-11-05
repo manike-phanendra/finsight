@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, DollarSign, Calendar, Tag } from 'lucide-react';
+import { X, IndianRupee, Calendar, Tag } from 'lucide-react';
 import api from '../services/api';
 
 const BudgetModal = ({ isOpen, onClose, budget, onSaved }) => {
@@ -126,16 +126,16 @@ const BudgetModal = ({ isOpen, onClose, budget, onSaved }) => {
 
           <div>
             <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5">
-              Monthly Spending Limit ($)
+              Monthly Spending Limit (₹ INR)
             </label>
             <div className="relative">
-              <DollarSign className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <IndianRupee className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
                 type="number"
                 step="1"
                 min="1"
                 required
-                placeholder="500"
+                placeholder="5000"
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                 className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"

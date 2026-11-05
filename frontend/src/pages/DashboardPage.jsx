@@ -170,7 +170,7 @@ const DashboardPage = () => {
                   tickLine={false}
                   axisLine={false}
                   tick={{ fill: '#94a3b8', fontSize: 12 }}
-                  tickFormatter={(val) => `$${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`}
+                  tickFormatter={(val) => `₹${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`}
                 />
                 <Tooltip
                   contentStyle={{
@@ -180,7 +180,7 @@ const DashboardPage = () => {
                     color: '#fff',
                     fontSize: '12px',
                   }}
-                  formatter={(value) => [`$${Number(value).toLocaleString()}`, '']}
+                  formatter={(value) => [`₹${Number(value).toLocaleString('en-IN')}`, '']}
                 />
                 <Legend
                   wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
@@ -233,7 +233,7 @@ const DashboardPage = () => {
                       color: '#fff',
                       fontSize: '12px',
                     }}
-                    formatter={(val) => [`$${Number(val).toLocaleString()}`, 'Amount']}
+                    formatter={(val) => [`₹${Number(val).toLocaleString('en-IN')}`, 'Amount']}
                   />
                   <Legend
                     wrapperStyle={{ fontSize: '11px', maxHeight: '60px', overflowY: 'auto' }}
@@ -293,7 +293,7 @@ const DashboardPage = () => {
                       tx.type === 'income' ? 'text-emerald-500' : 'text-slate-900 dark:text-white'
                     }`}
                   >
-                    {tx.type === 'income' ? '+' : '-'}${Number(tx.amount).toFixed(2)}
+                    {tx.type === 'income' ? '+' : '-'}₹{Number(tx.amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
               ))
@@ -332,7 +332,7 @@ const DashboardPage = () => {
                       )}
                     </div>
                     <span className="text-slate-400 text-[11px]">
-                      ${b.spentAmount} / ${b.amount}
+                      ₹{Number(b.spentAmount).toLocaleString('en-IN')} / ₹{Number(b.amount).toLocaleString('en-IN')}
                     </span>
                   </div>
                   <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
@@ -387,8 +387,8 @@ const DashboardPage = () => {
                     />
                   </div>
                   <div className="flex justify-between text-[11px] text-slate-400">
-                    <span>Saved: ${g.savedAmount}</span>
-                    <span>Target: ${g.targetAmount}</span>
+                    <span>Saved: ₹{Number(g.savedAmount).toLocaleString('en-IN')}</span>
+                    <span>Target: ₹{Number(g.targetAmount).toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               ))

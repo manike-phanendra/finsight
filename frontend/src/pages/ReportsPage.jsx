@@ -3,7 +3,7 @@ import {
   FileSpreadsheet,
   Download,
   Calendar,
-  DollarSign,
+  IndianRupee,
   TrendingUp,
   TrendingDown,
   Printer,
@@ -178,7 +178,7 @@ const ReportsPage = () => {
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
             <span className="text-xs text-slate-400 font-medium">Monthly Inflow</span>
             <p className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">
-              +${totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              +₹{totalIncome.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </p>
             <span className="text-[11px] text-slate-400 mt-1 block">
               {transactions.filter((t) => t.type === 'income').length} income events
@@ -188,7 +188,7 @@ const ReportsPage = () => {
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
             <span className="text-xs text-slate-400 font-medium">Monthly Outflow</span>
             <p className="text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-1">
-              -${totalExpenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              -₹{totalExpenses.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </p>
             <span className="text-[11px] text-slate-400 mt-1 block">
               {transactions.filter((t) => t.type === 'expense').length} expense transactions
@@ -202,7 +202,7 @@ const ReportsPage = () => {
                 netSavings >= 0 ? 'text-brand-600 dark:text-brand-400' : 'text-rose-500'
               }`}
             >
-              ${netSavings.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              ₹{netSavings.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </p>
             <span className="text-[11px] font-semibold text-emerald-500 mt-1 block">
               {savingsRate}% Savings Efficiency
@@ -235,7 +235,7 @@ const ReportsPage = () => {
                       </td>
                       <td className="py-3 px-3 text-right text-slate-500">{cat.count}</td>
                       <td className="py-3 px-3 text-right font-bold text-slate-900 dark:text-white">
-                        ${Number(cat.amount).toFixed(2)}
+                        ₹{Number(cat.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </td>
                       <td className="py-3 px-3 text-right font-semibold text-slate-500">
                         {cat.percentage}%
@@ -297,7 +297,7 @@ const ReportsPage = () => {
                           tx.type === 'income' ? 'text-emerald-500' : 'text-slate-900 dark:text-white'
                         }`}
                       >
-                        {tx.type === 'income' ? '+' : '-'}${Number(tx.amount).toFixed(2)}
+                        {tx.type === 'income' ? '+' : '-'}₹{Number(tx.amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                     </tr>
                   ))
