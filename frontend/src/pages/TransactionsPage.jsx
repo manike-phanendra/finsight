@@ -78,6 +78,14 @@ const TransactionsPage = () => {
     return () => clearTimeout(delayDebounce);
   }, [search, typeFilter, categoryFilter, startDate, endDate, sortBy]);
 
+  useEffect(() => {
+    const handleDataChanged = () => {
+      fetchTransactions();
+    };
+    window.addEventListener('finsight_data_changed', handleDataChanged);
+    return () => window.removeEventListener('finsight_data_changed', handleDataChanged);
+  }, []);
+
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this transaction record?')) {
       try {

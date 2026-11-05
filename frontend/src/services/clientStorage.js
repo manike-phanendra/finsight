@@ -7,7 +7,7 @@ const STORAGE_KEYS = {
   BUDGETS: 'finsight_store_budgets',
   GOALS: 'finsight_store_goals',
   CATEGORIES: 'finsight_store_categories',
-  INIT: 'finsight_store_initialized_inr_v2',
+  INIT: 'finsight_store_initialized_v3',
 };
 
 const getFromStore = (key, fallback = []) => {
@@ -69,6 +69,7 @@ export const initClientStore = () => {
     const d = new Date(currentYear, currentMonth - i, 1);
     const y = d.getFullYear();
     const m = d.getMonth();
+    const isCurrent = i === 0;
 
     sampleTransactions.push(
       {
@@ -88,7 +89,7 @@ export const initClientStore = () => {
         type: 'income',
         category: 'Freelance',
         paymentMethod: 'Stripe',
-        date: new Date(y, m, 14, 16, 30).toISOString(),
+        date: new Date(y, m, isCurrent ? 4 : 14, 16, 30).toISOString(),
         description: 'Client dashboard design sprint delivery',
       },
       {
@@ -108,7 +109,7 @@ export const initClientStore = () => {
         type: 'expense',
         category: 'Utilities',
         paymentMethod: 'Card',
-        date: new Date(y, m, 8, 11, 15).toISOString(),
+        date: new Date(y, m, isCurrent ? 2 : 8, 11, 15).toISOString(),
         description: 'Electric bill and gigabit internet connection',
       },
       {
@@ -118,7 +119,7 @@ export const initClientStore = () => {
         type: 'expense',
         category: 'Food & Dining',
         paymentMethod: 'Card',
-        date: new Date(y, m, 10, 14, 20).toISOString(),
+        date: new Date(y, m, isCurrent ? 3 : 10, 14, 20).toISOString(),
         description: 'Weekly organic groceries and pantry restock',
       },
       {
@@ -128,7 +129,7 @@ export const initClientStore = () => {
         type: 'expense',
         category: 'Food & Dining',
         paymentMethod: 'Card',
-        date: new Date(y, m, 19, 13, 0).toISOString(),
+        date: new Date(y, m, isCurrent ? 4 : 19, 13, 0).toISOString(),
         description: 'Team lunches and weekend artisan bakery',
       },
       {
@@ -138,7 +139,7 @@ export const initClientStore = () => {
         type: 'expense',
         category: 'Transportation',
         paymentMethod: 'Card',
-        date: new Date(y, m, 12, 8, 45).toISOString(),
+        date: new Date(y, m, isCurrent ? 3 : 12, 8, 45).toISOString(),
         description: 'Monthly unlimited transit card and Uber trips',
       },
       {
@@ -148,7 +149,7 @@ export const initClientStore = () => {
         type: 'expense',
         category: 'Entertainment',
         paymentMethod: 'Card',
-        date: new Date(y, m, 22, 20, 0).toISOString(),
+        date: new Date(y, m, isCurrent ? 4 : 22, 20, 0).toISOString(),
         description: 'Netflix, Spotify & live music performance',
       }
     );
@@ -230,7 +231,18 @@ export const clientApiHandler = async (method, path, data = {}, params = {}) => 
   initClientStore();
 
   const url = path.replace(/^\/api/, '');
-  const cleanPath = url.split('?')[0];
+  const [cleanPath, queryString] = url.split('?');
+
+  // Merge query parameters from path if present (e.g. /transactions?limit=100&type=income)
+  const mergedParams = { ...params };
+  if (queryString) {
+    const parsed = new URLSearchParams(queryString);
+    parsed.forEach((val, key) => {
+      if (mergedParams[key] === undefined) {
+        mergedParams[key] = val;
+      }
+    });
+  }
 
   // ==================== AUTH ====================
   if (cleanPath === '/auth/register' && method === 'post') {
@@ -293,12 +305,12 @@ export const clientApiHandler = async (method, path, data = {}, params = {}) => 
   // ==================== TRANSACTIONS ====================
   if (cleanPath === '/transactions' && method === 'get') {
     let txs = getFromStore(STORAGE_KEYS.TRANSACTIONS);
-    const type = params.type;
-    const category = params.category;
-    const search = (params.search || '').toLowerCase();
-    const startDate = params.startDate;
-    const endDate = params.endDate;
-    const sort = params.sort || 'date_desc';
+    const type = mergedParams.type;
+    const category = mergedParams.category;
+    const search = (mergedParams.search || '').toLowerCase();
+    const startDate = mergedParams.startDate;
+    const endDate = mergedParams.endDate;
+    const sort = mergedParams.sort || 'date_desc';
 
     if (type && type !== 'all') txs = txs.filter((t) => t.type === type);
     if (category && category !== 'all') txs = txs.filter((t) => t.category === category);
@@ -332,13 +344,14 @@ export const clientApiHandler = async (method, path, data = {}, params = {}) => 
     const txs = getFromStore(STORAGE_KEYS.TRANSACTIONS);
     const newTx = {
       _id: 'tx_' + Date.now(),
-      title: data.title,
+      title: (data.title || '').trim(),
       amount: Number(data.amount),
-      type: data.type,
-      category: data.category,
-      paymentMethod: data.paymentMethod || 'Card',
+      type: data.type || 'expense',
+      category: (data.category || '').trim() || 'Other',
+      paymentMethod: (data.paymentMethod || 'Card').trim(),
       date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
-      description: data.description || '',
+      description: (data.description || '').trim(),
+      createdAt: new Date().toISOString(),
     };
     txs.unshift(newTx);
     saveToStore(STORAGE_KEYS.TRANSACTIONS, txs);
@@ -348,9 +361,15 @@ export const clientApiHandler = async (method, path, data = {}, params = {}) => 
   if (cleanPath.startsWith('/transactions/') && method === 'put') {
     const id = cleanPath.split('/')[2];
     const txs = getFromStore(STORAGE_KEYS.TRANSACTIONS);
-    const idx = txs.findIndex((t) => t._id === id);
+    const idx = txs.findIndex((t) => String(t._id) === String(id));
     if (idx >= 0) {
-      txs[idx] = { ...txs[idx], ...data, amount: Number(data.amount || txs[idx].amount) };
+      txs[idx] = {
+        ...txs[idx],
+        ...data,
+        amount: Number(data.amount !== undefined ? data.amount : txs[idx].amount),
+        category: data.category ? data.category.trim() : txs[idx].category,
+        date: data.date ? new Date(data.date).toISOString() : txs[idx].date,
+      };
       saveToStore(STORAGE_KEYS.TRANSACTIONS, txs);
       return { data: { success: true, message: 'Transaction updated.', transaction: txs[idx] } };
     }
@@ -359,7 +378,7 @@ export const clientApiHandler = async (method, path, data = {}, params = {}) => 
   if (cleanPath.startsWith('/transactions/') && method === 'delete') {
     const id = cleanPath.split('/')[2];
     let txs = getFromStore(STORAGE_KEYS.TRANSACTIONS);
-    txs = txs.filter((t) => t._id !== id);
+    txs = txs.filter((t) => String(t._id) !== String(id));
     saveToStore(STORAGE_KEYS.TRANSACTIONS, txs);
     return { data: { success: true, message: 'Transaction deleted.' } };
   }
@@ -368,8 +387,8 @@ export const clientApiHandler = async (method, path, data = {}, params = {}) => 
   if (cleanPath === '/budgets' && method === 'get') {
     const budgets = getFromStore(STORAGE_KEYS.BUDGETS);
     const txs = getFromStore(STORAGE_KEYS.TRANSACTIONS);
-    const month = parseInt(params.month) || new Date().getMonth() + 1;
-    const year = parseInt(params.year) || new Date().getFullYear();
+    const month = parseInt(mergedParams.month) || new Date().getMonth() + 1;
+    const year = parseInt(mergedParams.year) || new Date().getFullYear();
 
     // Calculate actual spending in current month for each category
     const categorySpent = {};
@@ -377,13 +396,15 @@ export const clientApiHandler = async (method, path, data = {}, params = {}) => 
       if (t.type === 'expense') {
         const d = new Date(t.date);
         if (d.getMonth() + 1 === month && d.getFullYear() === year) {
-          categorySpent[t.category.toLowerCase()] = (categorySpent[t.category.toLowerCase()] || 0) + Number(t.amount);
+          const catKey = (t.category || '').trim().toLowerCase();
+          categorySpent[catKey] = (categorySpent[catKey] || 0) + Number(t.amount);
         }
       }
     });
 
     const enriched = budgets.map((b) => {
-      const spent = categorySpent[b.category.toLowerCase()] || 0;
+      const catKey = (b.category || '').trim().toLowerCase();
+      const spent = categorySpent[catKey] || 0;
       const pct = b.amount > 0 ? Math.round((spent / b.amount) * 100) : 0;
       return {
         ...b,
@@ -547,19 +568,27 @@ export const clientApiHandler = async (method, path, data = {}, params = {}) => 
     });
 
     // Recent 5
-    const recent = [...txs].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+    const recent = [...txs]
+      .sort((a, b) => {
+        const diff = new Date(b.date).getTime() - new Date(a.date).getTime();
+        if (diff !== 0) return diff;
+        return (b._id || '').localeCompare(a._id || '');
+      })
+      .slice(0, 5);
 
     // Budget progress
     const catSpent = {};
     txs.forEach((t) => {
       const d = new Date(t.date);
       if (d.getMonth() === currM && d.getFullYear() === currY && t.type === 'expense') {
-        catSpent[t.category.toLowerCase()] = (catSpent[t.category.toLowerCase()] || 0) + Number(t.amount);
+        const catKey = (t.category || '').trim().toLowerCase();
+        catSpent[catKey] = (catSpent[catKey] || 0) + Number(t.amount);
       }
     });
 
     const budgetProgress = budgets.map((b) => {
-      const spent = catSpent[b.category.toLowerCase()] || 0;
+      const catKey = (b.category || '').trim().toLowerCase();
+      const spent = catSpent[catKey] || 0;
       return {
         _id: b._id,
         category: b.category,
@@ -603,7 +632,7 @@ export const clientApiHandler = async (method, path, data = {}, params = {}) => 
 
   if (cleanPath === '/analytics/monthly' && method === 'get') {
     const txs = getFromStore(STORAGE_KEYS.TRANSACTIONS);
-    const monthsCount = parseInt(params.months) || 6;
+    const monthsCount = parseInt(mergedParams.months) || 6;
     const now = new Date();
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const dataList = [];
@@ -638,19 +667,21 @@ export const clientApiHandler = async (method, path, data = {}, params = {}) => 
 
   if (cleanPath === '/analytics/categories' && method === 'get') {
     const txs = getFromStore(STORAGE_KEYS.TRANSACTIONS);
-    const m = params.month ? parseInt(params.month) - 1 : null;
-    const y = params.year ? parseInt(params.year) : null;
+    const m = mergedParams.month ? parseInt(mergedParams.month) - 1 : null;
+    const y = mergedParams.year ? parseInt(mergedParams.year) : null;
+    const targetType = mergedParams.type || 'expense';
 
     const catTotals = {};
     let grandTotal = 0;
 
     txs.forEach((t) => {
-      if (t.type === 'expense') {
+      if (t.type === targetType) {
         const d = new Date(t.date);
         if (m !== null && y !== null) {
           if (d.getMonth() !== m || d.getFullYear() !== y) return;
         }
-        catTotals[t.category] = (catTotals[t.category] || 0) + Number(t.amount);
+        const cat = (t.category || 'Other').trim();
+        catTotals[cat] = (catTotals[cat] || 0) + Number(t.amount);
         grandTotal += Number(t.amount);
       }
     });

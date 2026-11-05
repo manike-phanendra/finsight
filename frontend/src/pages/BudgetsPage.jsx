@@ -51,6 +51,13 @@ const BudgetsPage = () => {
 
   useEffect(() => {
     fetchBudgets();
+
+    const handleDataChanged = () => {
+      fetchBudgets();
+    };
+
+    window.addEventListener('finsight_data_changed', handleDataChanged);
+    return () => window.removeEventListener('finsight_data_changed', handleDataChanged);
   }, [selectedMonth, selectedYear]);
 
   const handleDelete = async (id) => {

@@ -50,6 +50,13 @@ const ReportsPage = () => {
 
   useEffect(() => {
     fetchReportData();
+
+    const handleDataChanged = () => {
+      fetchReportData();
+    };
+
+    window.addEventListener('finsight_data_changed', handleDataChanged);
+    return () => window.removeEventListener('finsight_data_changed', handleDataChanged);
   }, [reportMonth, reportYear]);
 
   // Aggregate metrics for this report period

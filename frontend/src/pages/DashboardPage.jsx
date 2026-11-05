@@ -37,34 +37,41 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        setLoading(true);
-        const [sumRes, monthRes, catRes] = await Promise.all([
-          api.get('/analytics/summary'),
-          api.get('/analytics/monthly?months=6'),
-          api.get('/analytics/categories?type=expense'),
-        ]);
+  const fetchDashboardData = async (showLoading = true) => {
+    try {
+      if (showLoading) setLoading(true);
+      const [sumRes, monthRes, catRes] = await Promise.all([
+        api.get('/analytics/summary'),
+        api.get('/analytics/monthly?months=6'),
+        api.get('/analytics/categories?type=expense'),
+      ]);
 
-        if (sumRes.data.success) {
-          setSummaryData(sumRes.data.data);
-        }
-        if (monthRes.data.success) {
-          setMonthlyData(monthRes.data.data);
-        }
-        if (catRes.data.success) {
-          setCategoryData(catRes.data.data);
-        }
-      } catch (err) {
-        console.error('Failed to load dashboard metrics:', err);
-        setError('Failed to fetch dashboard data. Please try again.');
-      } finally {
-        setLoading(false);
+      if (sumRes.data.success) {
+        setSummaryData(sumRes.data.data);
       }
+      if (monthRes.data.success) {
+        setMonthlyData(monthRes.data.data);
+      }
+      if (catRes.data.success) {
+        setCategoryData(catRes.data.data);
+      }
+    } catch (err) {
+      console.error('Failed to load dashboard metrics:', err);
+      setError('Failed to fetch dashboard data. Please try again.');
+    } finally {
+      if (showLoading) setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData(true);
+
+    const handleDataChanged = () => {
+      fetchDashboardData(false);
     };
 
-    fetchDashboardData();
+    window.addEventListener('finsight_data_changed', handleDataChanged);
+    return () => window.removeEventListener('finsight_data_changed', handleDataChanged);
   }, []);
 
   if (loading) {

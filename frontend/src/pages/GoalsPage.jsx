@@ -45,6 +45,13 @@ const GoalsPage = () => {
 
   useEffect(() => {
     fetchGoals();
+
+    const handleDataChanged = () => {
+      fetchGoals();
+    };
+
+    window.addEventListener('finsight_data_changed', handleDataChanged);
+    return () => window.removeEventListener('finsight_data_changed', handleDataChanged);
   }, []);
 
   const handleDelete = async (id) => {

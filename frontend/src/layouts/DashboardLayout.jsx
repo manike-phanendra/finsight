@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
@@ -9,40 +9,47 @@ const DashboardLayout = () => {
   const { isAuthenticated, loading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [budgetAlerts, setBudgetAlerts] = useState([]);
+  const location = useLocation();
+
+  const fetchBudgetAlerts = useCallback(async () => {
+    if (!isAuthenticated) return;
+    try {
+      const res = await api.get('/budgets');
+      if (res.data.success && res.data.budgets) {
+        const alerts = [];
+        res.data.budgets.forEach((b) => {
+          if (b.isOverBudget) {
+            alerts.push({
+              category: b.category,
+              isOver: true,
+              exceeded: b.spentAmount - b.amount,
+              percentage: b.percentage,
+            });
+          } else if (b.isWarning) {
+            alerts.push({
+              category: b.category,
+              isOver: false,
+              percentage: b.percentage,
+            });
+          }
+        });
+        setBudgetAlerts(alerts);
+      }
+    } catch (err) {
+      console.error('Failed to load budget alerts:', err);
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    if (!isAuthenticated) return;
+    fetchBudgetAlerts();
 
-    const fetchBudgetAlerts = async () => {
-      try {
-        const res = await api.get('/budgets');
-        if (res.data.success && res.data.budgets) {
-          const alerts = [];
-          res.data.budgets.forEach((b) => {
-            if (b.isOverBudget) {
-              alerts.push({
-                category: b.category,
-                isOver: true,
-                exceeded: b.spentAmount - b.amount,
-                percentage: b.percentage,
-              });
-            } else if (b.isWarning) {
-              alerts.push({
-                category: b.category,
-                isOver: false,
-                percentage: b.percentage,
-              });
-            }
-          });
-          setBudgetAlerts(alerts);
-        }
-      } catch (err) {
-        console.error('Failed to load budget alerts:', err);
-      }
+    const handleDataChanged = () => {
+      fetchBudgetAlerts();
     };
 
-    fetchBudgetAlerts();
-  }, [isAuthenticated]);
+    window.addEventListener('finsight_data_changed', handleDataChanged);
+    return () => window.removeEventListener('finsight_data_changed', handleDataChanged);
+  }, [fetchBudgetAlerts, location.pathname]);
 
   if (loading) {
     return (

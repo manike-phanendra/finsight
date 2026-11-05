@@ -35,27 +35,34 @@ const AnalyticsPage = () => {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const [mRes, cRes, sRes] = await Promise.all([
-          api.get(`/analytics/monthly?months=${monthsCount}`),
-          api.get('/analytics/categories?type=expense'),
-          api.get('/analytics/summary'),
-        ]);
+  const fetchData = async (showLoading = true) => {
+    try {
+      if (showLoading) setLoading(true);
+      const [mRes, cRes, sRes] = await Promise.all([
+        api.get(`/analytics/monthly?months=${monthsCount}`),
+        api.get('/analytics/categories?type=expense'),
+        api.get('/analytics/summary'),
+      ]);
 
-        if (mRes.data.success) setMonthlyData(mRes.data.data);
-        if (cRes.data.success) setCategoryData(cRes.data.data);
-        if (sRes.data.success) setSummary(sRes.data.data);
-      } catch (err) {
-        console.error('Failed to load analytics data:', err);
-      } finally {
-        setLoading(false);
-      }
+      if (mRes.data.success) setMonthlyData(mRes.data.data);
+      if (cRes.data.success) setCategoryData(cRes.data.data);
+      if (sRes.data.success) setSummary(sRes.data.data);
+    } catch (err) {
+      console.error('Failed to load analytics data:', err);
+    } finally {
+      if (showLoading) setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(true);
+
+    const handleDataChanged = () => {
+      fetchData(false);
     };
 
-    fetchData();
+    window.addEventListener('finsight_data_changed', handleDataChanged);
+    return () => window.removeEventListener('finsight_data_changed', handleDataChanged);
   }, [monthsCount]);
 
   const cards = summary?.financialCards || {};
