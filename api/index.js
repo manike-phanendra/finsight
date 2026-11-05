@@ -37,6 +37,27 @@ app.use(async (req, res, next) => {
   next();
 });
 
+// Root welcome route
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    project: 'FinSight – Personal Finance Management & Analytics System',
+    team: 'QUANTORA',
+    message: 'Welcome to FinSight REST API Server. All backend systems operational.',
+    database: 'MongoDB Atlas Connected',
+    frontendUrl: 'https://frontend-lac-three-29.vercel.app',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth/login',
+      transactions: '/api/transactions',
+      budgets: '/api/budgets',
+      goals: '/api/goals',
+      analytics: '/api/analytics/summary',
+    },
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({
