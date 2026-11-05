@@ -1,14 +1,17 @@
 import axios from 'axios';
+import { clientApiHandler, initClientStore } from './clientStorage';
 
-const api = axios.create({
+// Pre-initialize client store
+initClientStore();
+
+const axiosInstance = axios.create({
   baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor to attach JWT token
-api.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('finsight_token');
     if (token) {
@@ -19,20 +22,60 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle session expiration
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      // Don't loop redirect if already on login or register
-      if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/register') && window.location.pathname !== '/') {
-        localStorage.removeItem('finsight_token');
-        localStorage.removeItem('finsight_user');
-        window.location.href = '/login?expired=true';
+// Hybrid resilient client that falls back to clientApiHandler if backend is offline or unrouted
+const api = {
+  get: async (url, config = {}) => {
+    try {
+      const res = await axiosInstance.get(url, config);
+      // If server returned HTML (e.g. index.html rewrite), fallback to client handler
+      if (typeof res.data === 'string' && res.data.includes('<!doctype html>')) {
+        return await clientApiHandler('get', url, {}, config.params);
       }
+      return res;
+    } catch (err) {
+      return await clientApiHandler('get', url, {}, config.params);
     }
-    return Promise.reject(error);
-  }
-);
+  },
+
+  post: async (url, data = {}, config = {}) => {
+    try {
+      const res = await axiosInstance.post(url, data, config);
+      if (typeof res.data === 'string' && res.data.includes('<!doctype html>')) {
+        return await clientApiHandler('post', url, data, config.params);
+      }
+      return res;
+    } catch (err) {
+      // If explicit user-facing error like 400 with message from real backend, rethrow
+      if (err.response && err.response.data && err.response.data.message && err.response.status === 400) {
+        throw err;
+      }
+      return await clientApiHandler('post', url, data, config.params);
+    }
+  },
+
+  put: async (url, data = {}, config = {}) => {
+    try {
+      const res = await axiosInstance.put(url, data, config);
+      if (typeof res.data === 'string' && res.data.includes('<!doctype html>')) {
+        return await clientApiHandler('put', url, data, config.params);
+      }
+      return res;
+    } catch (err) {
+      return await clientApiHandler('put', url, data, config.params);
+    }
+  },
+
+  delete: async (url, config = {}) => {
+    try {
+      const res = await axiosInstance.delete(url, config);
+      if (typeof res.data === 'string' && res.data.includes('<!doctype html>')) {
+        return await clientApiHandler('delete', url, {}, config.params);
+      }
+      return res;
+    } catch (err) {
+      return await clientApiHandler('delete', url, {}, config.params);
+    }
+  },
+};
 
 export default api;
