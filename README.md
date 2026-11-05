@@ -300,20 +300,20 @@ cd backend
 npm install
 ```
 
-Configure `backend/.env` (pre-created with defaults):
+Configure `backend/.env` (pre-configured with your MongoDB Atlas cluster):
 ```env
 PORT=5000
 NODE_ENV=development
-MONGODB_URI=
+MONGODB_URI=mongodb+srv://manikephanindra_db_user:uQ1GzyXlZPIiJnZm@cluster0.1sny5ho.mongodb.net/finsight?retryWrites=true&w=majority
 JWT_SECRET=finsight_quantora_super_secret_jwt_key_2026_production
 CLIENT_URL=http://localhost:5173
 ```
-*(Leave `MONGODB_URI` blank to run with built-in memory store, or paste your MongoDB Atlas cluster connection string).*
 
 Start the backend:
 ```bash
 npm start
 # Server listens at http://localhost:5000
+# Connected to MongoDB Atlas: ac-f2fyrae-shard-00-00.1sny5ho.mongodb.net
 ```
 
 ### Step 3: Configure & Launch Frontend Application

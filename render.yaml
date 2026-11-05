@@ -13,4 +13,4 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: MONGODB_URI
-        sync: false
+        value: mongodb+srv://manikephanindra_db_user:uQ1GzyXlZPIiJnZm@cluster0.1sny5ho.mongodb.net/finsight?retryWrites=true&w=majority

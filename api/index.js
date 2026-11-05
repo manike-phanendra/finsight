@@ -1,10 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const connectDB = require('../backend/config/db');
-const { seedDemoUserAndData } = require('../backend/utils/seedData');
+const dns = require('dns');
+
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+} catch (e) {}
 
 dotenv.config();
+
+const connectDB = require('../backend/config/db');
+const { seedDemoUserAndData } = require('../backend/utils/seedData');
 
 const app = express();
 
@@ -37,6 +43,7 @@ app.get('/api/health', (req, res) => {
     status: 'online',
     project: 'FinSight – Personal Finance Management & Analytics System',
     team: 'QUANTORA',
+    database: 'MongoDB Atlas',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
   });
