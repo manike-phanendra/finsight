@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
+const fs = require('fs');
 const connectDB = require('./config/db');
 const { seedDemoUserAndData } = require('./utils/seedData');
 
@@ -27,30 +29,6 @@ app.options('*', cors());
 // Body parser
 app.use(express.json());
 
-// Root Welcome Route for Render, Vercel, & Cloud Health Checks
-app.get('/', (req, res) => {
-  res.json({
-    status: 'online',
-    project: 'FinSight – Personal Finance Management & Analytics System',
-    team: 'QUANTORA',
-    message: 'Welcome to FinSight REST API Server. All backend systems operational.',
-    uptimeSeconds: Math.floor((Date.now() - startTime) / 1000),
-    endpoints: {
-      health: '/api/health',
-      authLogin: '/api/auth/login',
-      authRegister: '/api/auth/register',
-      authMe: '/api/auth/me',
-      transactions: '/api/transactions',
-      budgets: '/api/budgets',
-      goals: '/api/goals',
-      analyticsSummary: '/api/analytics/summary',
-      analyticsMonthly: '/api/analytics/monthly',
-      analyticsCategories: '/api/analytics/categories',
-    },
-    timestamp: new Date().toISOString(),
-  });
-});
-
 // API Health Check & System Status Endpoint
 app.get('/api/health', (req, res) => {
   res.json({
@@ -64,7 +42,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Mount Routes strictly as specified in blueprint
+// Mount All Backend REST API Routes strictly as specified in blueprint
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/transactions', require('./routes/transactionRoutes'));
 app.use('/api/budgets', require('./routes/budgetRoutes'));
@@ -72,7 +50,41 @@ app.use('/api/goals', require('./routes/goalRoutes'));
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
 app.use('/api/categories', require('./routes/categoryRoutes'));
 
-// 404 handler for unmatched routes
+// Serve Frontend Static UI (Landing page, Dashboard, Reports, Analytics, etc.)
+const frontendDistPath = path.resolve(__dirname, '../frontend/dist');
+
+if (fs.existsSync(frontendDistPath)) {
+  console.log(`[FinSight] Serving full production frontend UI from: ${frontendDistPath}`);
+  app.use(express.static(frontendDistPath));
+
+  // SPA fallback for all frontend routes (e.g. /dashboard, /transactions, /budgets)
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+} else {
+  // Fallback if frontend is not built
+  app.get('/', (req, res) => {
+    res.json({
+      status: 'online',
+      project: 'FinSight – Personal Finance Management & Analytics System',
+      team: 'QUANTORA',
+      message: 'FinSight REST API is running. Build frontend with npm run build to serve UI.',
+      endpoints: {
+        health: '/api/health',
+        auth: '/api/auth/login',
+        transactions: '/api/transactions',
+        budgets: '/api/budgets',
+        goals: '/api/goals',
+        analytics: '/api/analytics/summary',
+      },
+    });
+  });
+}
+
+// 404 handler for unmatched API routes
 app.use((req, res, next) => {
   res.status(404).json({
     success: false,
@@ -98,7 +110,7 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`=======================================================`);
 });
 
-// Initialize database connection and demo seeds
+// Initialize database connection and demo seeds asynchronously
 (async () => {
   // 1. Seed demo data into in-memory store immediately so server is 100% ready instantly
   try {

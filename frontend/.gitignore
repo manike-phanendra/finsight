@@ -1,1 +1,4 @@
-.vercel
+# Allow dist for unified deployment
+node_modules
+!dist/
+!dist/**

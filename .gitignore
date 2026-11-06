@@ -3,9 +3,11 @@ node_modules/
 .pnp
 .pnp.js
 
-# Production build outputs
-dist/
+# Build outputs (allow frontend/dist for single-service cloud hosting)
 build/
+backend/dist/
+!frontend/dist
+!frontend/dist/**
 
 # Environment files
 .env
@@ -31,3 +33,4 @@ lerna-debug.log*
 *.sw?
 .DS_Store
 Thumbs.db
+.vercel
