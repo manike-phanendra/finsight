@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   TrendingUp,
   ShieldCheck,
@@ -12,6 +13,7 @@ import {
   Zap,
   Users,
   FileSpreadsheet,
+  Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -27,12 +29,16 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0b132b] text-slate-900 dark:text-slate-100 selection:bg-brand-500 selection:text-white">
       {/* Top Navigation */}
-      <header className="sticky top-0 z-50 bg-white/70 dark:bg-[#0b132b]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80">
+      <header className="sticky top-0 z-50 bg-white/70 dark:bg-[#0b132b]/80 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-accent-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/25 group-hover:scale-105 transition-transform">
+            <motion.div
+              whileHover={{ scale: 1.08, rotate: 5 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-600 via-brand-500 to-accent-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/25"
+            >
               <TrendingUp className="w-5 h-5" />
-            </div>
+            </motion.div>
             <div>
               <span className="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-600 via-blue-500 to-accent-500">
                 FinSight
@@ -45,32 +51,40 @@ const LandingPage = () => {
 
           <div className="flex items-center space-x-3">
             {isAuthenticated ? (
-              <Link
-                to="/dashboard"
-                className="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold shadow-md shadow-brand-500/20 transition flex items-center space-x-1.5"
-              >
-                <span>Go to Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
+              <Link to="/dashboard">
+                <motion.div
+                  whileHover={{ scale: 1.04, y: -1 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="px-4 py-2 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold shadow-md shadow-brand-500/20 transition flex items-center space-x-1.5"
+                >
+                  <span>Go to Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </motion.div>
               </Link>
             ) : (
               <>
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={handleDemoAccess}
-                  className="hidden sm:inline-flex px-3.5 py-2 rounded-xl border border-brand-500/30 text-brand-600 dark:text-brand-400 hover:bg-brand-500/10 text-xs font-semibold transition"
+                  className="hidden sm:inline-flex px-3.5 py-2 rounded-2xl border border-brand-500/30 text-brand-600 dark:text-brand-400 hover:bg-brand-500/10 text-xs font-bold transition"
                 >
                   ⚡ Instant Demo
-                </button>
+                </motion.button>
                 <Link
                   to="/login"
-                  className="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-white transition"
+                  className="px-3.5 py-2 rounded-2xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-white transition"
                 >
                   Log In
                 </Link>
-                <Link
-                  to="/register"
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white text-xs font-semibold shadow-md shadow-brand-500/20 transition"
-                >
-                  Get Started
+                <Link to="/register">
+                  <motion.div
+                    whileHover={{ scale: 1.04, y: -1 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="px-4 py-2 rounded-2xl bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white text-xs font-bold shadow-md shadow-brand-500/20 transition"
+                  >
+                    Get Started
+                  </motion.div>
                 </Link>
               </>
             )}
@@ -83,13 +97,23 @@ const LandingPage = () => {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-500/15 via-transparent to-transparent pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-brand-500/10 dark:bg-brand-500/15 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-semibold mb-6">
-              <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="text-center max-w-3xl mx-auto"
+          >
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-brand-500/10 dark:bg-brand-500/15 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-bold mb-6 shadow-sm"
+            >
+              <span className="w-2 h-2 rounded-full bg-brand-500 animate-ping" />
               <span>QUANTORA presents: FinSight MERN FinTech System</span>
-            </div>
+            </motion.div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15]">
               Track Smart.{' '}
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-600 via-blue-500 to-accent-500">
                 Spend Wisely.
@@ -97,28 +121,33 @@ const LandingPage = () => {
               Save Better.
             </h1>
 
-            <p className="mt-6 text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
+            <p className="mt-6 text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto font-medium">
               A comprehensive Personal Finance Management & Analytics application designed to give you total control over cash flow, smart monthly budget limits, interactive analytics, and milestone-driven savings goals.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link
-                to="/register"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white font-semibold text-sm shadow-xl shadow-brand-500/25 transition-all flex items-center justify-center space-x-2 hover:scale-[1.02]"
-              >
-                <span>Launch Your Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
+              <Link to="/register" className="w-full sm:w-auto">
+                <motion.div
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white font-extrabold text-sm shadow-xl shadow-brand-500/30 transition-all flex items-center justify-center space-x-2"
+                >
+                  <span>Launch Your Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </motion.div>
               </Link>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={handleDemoAccess}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-sm text-slate-800 dark:text-white transition-all flex items-center justify-center space-x-2"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 font-extrabold text-sm text-slate-800 dark:text-white transition-all flex items-center justify-center space-x-2 shadow-sm"
               >
                 <Zap className="w-4 h-4 text-amber-500" />
                 <span>Explore Live Demo Data</span>
-              </button>
+              </motion.button>
             </div>
 
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-500 dark:text-slate-400">
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-500 dark:text-slate-400 font-semibold">
               <div className="flex items-center space-x-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                 <span>Complete 7 Modules</span>
@@ -136,10 +165,16 @@ const LandingPage = () => {
                 <span>MongoDB Full CRUD</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Interactive Mock Dashboard Preview */}
-          <div className="mt-14 max-w-5xl mx-auto rounded-3xl p-2 sm:p-3 bg-gradient-to-b from-brand-500/20 via-slate-200/50 to-transparent dark:from-brand-500/20 dark:via-slate-800/50 border border-slate-200/80 dark:border-slate-700/50 shadow-2xl">
+          {/* Interactive Mock Dashboard Preview with Float Animation */}
+          <motion.div
+            initial={{ opacity: 0, y: 40, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ y: -4, transition: { duration: 0.3 } }}
+            className="mt-14 max-w-5xl mx-auto rounded-3xl p-2 sm:p-3 bg-gradient-to-b from-brand-500/20 via-slate-200/50 to-transparent dark:from-brand-500/20 dark:via-slate-800/50 border border-slate-200/80 dark:border-slate-700/50 shadow-2xl"
+          >
             <div className="bg-white dark:bg-[#111c3a] rounded-2xl p-6 sm:p-8 overflow-hidden">
               <div className="flex items-center justify-between pb-6 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center space-x-3">
@@ -153,29 +188,29 @@ const LandingPage = () => {
 
               {/* Grid Preview Cards */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <p className="text-xs text-slate-400">Total Balance</p>
-                  <p className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-1">₹2,48,500.00</p>
-                  <span className="text-[10px] font-semibold text-emerald-500">+12.4% vs last mo</span>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                  <p className="text-xs text-slate-400 font-semibold">Total Balance</p>
+                  <p className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-1">₹3,12,600.00</p>
+                  <span className="text-[10px] font-bold text-emerald-500">+12.4% vs last mo</span>
                 </div>
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <p className="text-xs text-slate-400">Monthly Income</p>
-                  <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">₹75,000.00</p>
-                  <span className="text-[10px] font-semibold text-emerald-500">Tech & Freelance</span>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                  <p className="text-xs text-slate-400 font-semibold">Monthly Income</p>
+                  <p className="text-xl sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">₹81,500.00</p>
+                  <span className="text-[10px] font-bold text-emerald-500">Tech & Freelance</span>
                 </div>
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <p className="text-xs text-slate-400">Monthly Expenses</p>
-                  <p className="text-xl sm:text-2xl font-bold text-rose-600 dark:text-rose-400 mt-1">₹28,500.00</p>
-                  <span className="text-[10px] font-semibold text-rose-500">Within Budget</span>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                  <p className="text-xs text-slate-400 font-semibold">Monthly Expenses</p>
+                  <p className="text-xl sm:text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-1">₹32,400.00</p>
+                  <span className="text-[10px] font-bold text-rose-500">Within Budget</span>
                 </div>
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <p className="text-xs text-slate-400">Savings Target</p>
-                  <p className="text-xl sm:text-2xl font-bold text-violet-600 dark:text-violet-400 mt-1">72%</p>
-                  <span className="text-[10px] font-semibold text-violet-500">₹72,000 / ₹1,00,000</span>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                  <p className="text-xs text-slate-400 font-semibold">Savings Target</p>
+                  <p className="text-xl sm:text-2xl font-extrabold text-violet-600 dark:text-violet-400 mt-1">72%</p>
+                  <span className="text-[10px] font-bold text-violet-500">₹2,15,000 / ₹3,00,000</span>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -189,7 +224,7 @@ const LandingPage = () => {
             <p className="text-3xl font-extrabold text-slate-900 dark:text-white mt-2">
               Seven Integrated Financial Modules
             </p>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 font-medium">
               Every feature requested in the official FinSight blueprint, fully implemented with zero compromise.
             </p>
           </div>
@@ -234,16 +269,21 @@ const LandingPage = () => {
             ].map((m, idx) => {
               const Icon = m.icon;
               return (
-                <div
+                <motion.div
                   key={idx}
-                  className="p-6 rounded-2xl bg-white dark:bg-[#111c3a] border border-slate-200/80 dark:border-slate-800 hover:border-brand-500/50 shadow-sm hover:shadow-md transition-all group"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ delay: idx * 0.06, duration: 0.4 }}
+                  whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                  className="p-6 rounded-3xl bg-white dark:bg-[#111c3a] border border-slate-200/80 dark:border-slate-800 hover:border-brand-500/50 shadow-sm hover:shadow-xl transition-all duration-300 group cursor-pointer"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <div className="w-11 h-11 rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-brand-500 group-hover:text-white transition-all duration-300 shadow-sm">
                     <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">{m.title}</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">{m.desc}</p>
-                </div>
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">{m.title}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed font-medium">{m.desc}</p>
+                </motion.div>
               );
             })}
           </div>
@@ -255,10 +295,10 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2">
             <TrendingUp className="w-4 h-4 text-brand-500" />
-            <span className="font-bold text-slate-800 dark:text-slate-200">FinSight</span>
+            <span className="font-extrabold text-slate-800 dark:text-slate-200">FinSight</span>
             <span>&copy; 2026 QUANTORA. All rights reserved.</span>
           </div>
-          <p className="text-[11px]">
+          <p className="text-[11px] font-medium">
             Final Project Submission | MERN Stack Full-Stack FinTech Architecture
           </p>
         </div>
