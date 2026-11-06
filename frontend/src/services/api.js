@@ -4,19 +4,29 @@ import { clientApiHandler, initClientStore } from './clientStorage';
 // Pre-initialize client store
 initClientStore();
 
-const API_BASE = import.meta.env.VITE_API_URL 
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
-  : '/api';
+export const getApiBase = () => {
+  let customUrl = '';
+  if (typeof window !== 'undefined') {
+    customUrl = localStorage.getItem('finsight_api_url') || '';
+  }
+  const envUrl = import.meta.env.VITE_API_URL || '';
+  const target = (customUrl || envUrl || '').trim().replace(/\/$/, '');
+
+  if (!target) return '/api';
+  return target.endsWith('/api') ? target : `${target}/api`;
+};
 
 const axiosInstance = axios.create({
-  baseURL: API_BASE,
+  baseURL: getApiBase(),
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 15000,
 });
 
 axiosInstance.interceptors.request.use(
   (config) => {
+    config.baseURL = getApiBase();
     const token = localStorage.getItem('finsight_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -34,17 +44,21 @@ const notifyDataChanged = (url, method) => {
   }
 };
 
-// Hybrid resilient client that falls back to clientApiHandler if backend is offline or unrouted
+// Hybrid resilient client: calls backend API first; falls back seamlessly if backend is offline or network fails
 const api = {
   get: async (url, config = {}) => {
     try {
       const res = await axiosInstance.get(url, config);
-      // If server returned HTML (e.g. index.html rewrite), fallback to client handler
+      // If server returned HTML (e.g. index.html SPA rewrite), fallback to client handler
       if (typeof res.data === 'string' && res.data.includes('<!doctype html>')) {
         return await clientApiHandler('get', url, {}, config.params);
       }
       return res;
     } catch (err) {
+      // If backend responded with client error (400, 401, 403, 404, 422), propagate it
+      if (err.response && err.response.status >= 400 && err.response.status < 500) {
+        throw err;
+      }
       return await clientApiHandler('get', url, {}, config.params);
     }
   },
@@ -59,8 +73,7 @@ const api = {
         response = res;
       }
     } catch (err) {
-      // If explicit user-facing error like 400 with message from real backend, rethrow
-      if (err.response && err.response.data && err.response.data.message && err.response.status === 400) {
+      if (err.response && err.response.status >= 400 && err.response.status < 500) {
         throw err;
       }
       response = await clientApiHandler('post', url, data, config.params);
@@ -79,6 +92,9 @@ const api = {
         response = res;
       }
     } catch (err) {
+      if (err.response && err.response.status >= 400 && err.response.status < 500) {
+        throw err;
+      }
       response = await clientApiHandler('put', url, data, config.params);
     }
     notifyDataChanged(url, 'put');
@@ -95,6 +111,9 @@ const api = {
         response = res;
       }
     } catch (err) {
+      if (err.response && err.response.status >= 400 && err.response.status < 500) {
+        throw err;
+      }
       response = await clientApiHandler('delete', url, {}, config.params);
     }
     notifyDataChanged(url, 'delete');

@@ -1,11 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const dns = require('dns');
-
-try {
-  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
-} catch (e) {}
 
 dotenv.config();
 
@@ -14,26 +9,44 @@ const { seedDemoUserAndData } = require('../backend/utils/seedData');
 
 const app = express();
 
+// Enable bulletproof CORS for all client origins
 app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: (origin, callback) => callback(null, true),
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
 }));
+app.options('*', cors());
 
 app.use(express.json());
 
-// Initialize DB and Seed on Cold Start
-let isInitialized = false;
-app.use(async (req, res, next) => {
-  if (!isInitialized) {
-    try {
-      await connectDB();
-      await seedDemoUserAndData();
-      isInitialized = true;
-    } catch (e) {
-      console.error('Initialization error:', e);
-    }
+// Initialize DB and Seed once per cold start
+let initPromise = null;
+const ensureInit = () => {
+  if (!initPromise) {
+    initPromise = (async () => {
+      try {
+        await seedDemoUserAndData();
+      } catch (e) {
+        console.error('[Serverless Seed Notice]', e.message);
+      }
+      try {
+        const conn = await connectDB();
+        if (conn) {
+          await seedDemoUserAndData();
+        }
+      } catch (e) {
+        console.error('[Serverless Atlas Init Notice]', e.message);
+      }
+    })();
   }
+  return initPromise;
+};
+
+app.use(async (req, res, next) => {
+  try {
+    await ensureInit();
+  } catch (e) {}
   next();
 });
 
@@ -43,9 +56,7 @@ app.get('/', (req, res) => {
     status: 'online',
     project: 'FinSight – Personal Finance Management & Analytics System',
     team: 'QUANTORA',
-    message: 'Welcome to FinSight REST API Server. All backend systems operational.',
-    database: 'MongoDB Atlas Connected',
-    frontendUrl: 'https://frontend-lac-three-29.vercel.app',
+    message: 'Welcome to FinSight REST API Server (Serverless / Cloud). All systems operational.',
     endpoints: {
       health: '/api/health',
       auth: '/api/auth/login',
@@ -64,7 +75,6 @@ app.get('/api/health', (req, res) => {
     status: 'online',
     project: 'FinSight – Personal Finance Management & Analytics System',
     team: 'QUANTORA',
-    database: 'MongoDB Atlas',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
   });
@@ -78,9 +88,17 @@ app.use('/api/goals', require('../backend/routes/goalRoutes'));
 app.use('/api/analytics', require('../backend/routes/analyticsRoutes'));
 app.use('/api/categories', require('../backend/routes/categoryRoutes'));
 
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `API endpoint '${req.originalUrl}' not found.`,
+  });
+});
+
 // Error handling
 app.use((err, req, res, next) => {
-  console.error('Serverless error:', err);
+  console.error('[Serverless Error]', err.stack || err.message);
   res.status(err.status || 500).json({
     success: false,
     message: err.message || 'Internal Server Error',

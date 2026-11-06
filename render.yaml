@@ -3,14 +3,14 @@ services:
     name: finsight-backend
     env: node
     plan: free
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && node server.js
+    buildCommand: npm install --prefix backend || npm install
+    startCommand: node backend/server.js || node server.js
     envVars:
-      - key: PORT
-        value: 5000
       - key: NODE_ENV
         value: production
       - key: JWT_SECRET
         generateValue: true
       - key: MONGODB_URI
         value: mongodb+srv://manikephanindra_db_user:uQ1GzyXlZPIiJnZm@cluster0.1sny5ho.mongodb.net/finsight?retryWrites=true&w=majority
+      - key: MONGO_TIMEOUT_MS
+        value: 5000

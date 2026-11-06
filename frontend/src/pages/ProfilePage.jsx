@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   User,
   Mail,
@@ -11,13 +11,92 @@ import {
   LogOut,
   Moon,
   Sun,
+  Server,
+  Activity,
+  RefreshCw,
+  ExternalLink,
+  Wifi,
+  Database,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { getApiBase } from '../services/api';
+import axios from 'axios';
 
 const ProfilePage = () => {
   const { user, logout } = useAuth();
   const { darkMode, toggleTheme } = useTheme();
+
+  const [backendUrl, setBackendUrl] = useState(() => localStorage.getItem('finsight_api_url') || '');
+  const [testingConnection, setTestingConnection] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState(null); // { success: boolean, message: string, ping: number }
+  const [savedSuccess, setSavedSuccess] = useState(false);
+
+  const activeApiUrl = getApiBase();
+
+  const testBackendConnection = async (urlToTest = null) => {
+    setTestingConnection(true);
+    setConnectionStatus(null);
+    setSavedSuccess(false);
+
+    const targetBase = (urlToTest !== null ? urlToTest : (backendUrl || activeApiUrl)).trim().replace(/\/$/, '');
+    const healthUrl = targetBase.endsWith('/api') ? `${targetBase}/health` : `${targetBase}/api/health`;
+
+    const start = Date.now();
+    try {
+      const res = await axios.get(healthUrl, { timeout: 6000 });
+      const ping = Date.now() - start;
+      if (res.data && res.data.status === 'online') {
+        setConnectionStatus({
+          success: true,
+          message: `Connected successfully! (HTTP 200 OK, latency: ${ping}ms)`,
+          ping,
+          data: res.data,
+        });
+      } else {
+        setConnectionStatus({
+          success: true,
+          message: `Backend reachable (HTTP ${res.status}, latency: ${ping}ms)`,
+          ping,
+        });
+      }
+    } catch (err) {
+      const ping = Date.now() - start;
+      setConnectionStatus({
+        success: false,
+        message: err.response
+          ? `Backend responded with HTTP ${err.response.status}`
+          : `Connection failed (${err.message}). Verify URL and CORS settings.`,
+        ping,
+      });
+    } finally {
+      setTestingConnection(false);
+    }
+  };
+
+  useEffect(() => {
+    testBackendConnection();
+  }, []);
+
+  const handleSaveBackendUrl = () => {
+    const cleanUrl = backendUrl.trim().replace(/\/$/, '');
+    if (cleanUrl) {
+      localStorage.setItem('finsight_api_url', cleanUrl);
+    } else {
+      localStorage.removeItem('finsight_api_url');
+    }
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 3000);
+    testBackendConnection(cleanUrl);
+  };
+
+  const handleResetDefault = () => {
+    localStorage.removeItem('finsight_api_url');
+    setBackendUrl('');
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 3000);
+    testBackendConnection('');
+  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -75,6 +154,107 @@ const ProfilePage = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Backend API Connection & Cloud Deployment Control */}
+      <div className="bg-white dark:bg-[#111c3a] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+          <div className="flex items-center space-x-2.5">
+            <div className="p-2.5 rounded-2xl bg-brand-500/10 text-brand-500">
+              <Server className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                Backend Deployment & API Connectivity
+              </h3>
+              <p className="text-xs text-slate-400">
+                Verify that your deployed backend (Render / Vercel / Railway) is responding properly
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => testBackendConnection()}
+            disabled={testingConnection}
+            className="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center space-x-1.5 transition disabled:opacity-50 self-start sm:self-auto"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${testingConnection ? 'animate-spin' : ''}`} />
+            <span>{testingConnection ? 'Pinging API...' : 'Test Connection'}</span>
+          </button>
+        </div>
+
+        {/* Live Status Banner */}
+        <div
+          className={`p-4 rounded-2xl border text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 ${
+            connectionStatus?.success
+              ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400'
+              : connectionStatus === null
+              ? 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 text-slate-500'
+              : 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400'
+          }`}
+        >
+          <div className="flex items-center space-x-2.5">
+            <span
+              className={`w-2.5 h-2.5 rounded-full ${
+                connectionStatus?.success
+                  ? 'bg-emerald-500 animate-pulse'
+                  : connectionStatus === null
+                  ? 'bg-slate-400'
+                  : 'bg-rose-500'
+              }`}
+            />
+            <span className="font-semibold">
+              {testingConnection
+                ? 'Testing connection to backend API...'
+                : connectionStatus
+                ? connectionStatus.message
+                : 'Ready to check status'}
+            </span>
+          </div>
+
+          <div className="text-[11px] opacity-80 flex items-center space-x-2">
+            <span>Target:</span>
+            <code className="px-2 py-0.5 rounded bg-black/5 dark:bg-white/5 font-mono">
+              {activeApiUrl}
+            </code>
+          </div>
+        </div>
+
+        {/* Custom Backend URL Configuration */}
+        <div className="space-y-3 pt-2">
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            Deployed Backend API Base URL
+          </label>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input
+              type="text"
+              placeholder="e.g. https://finsight-backend.onrender.com or leave blank for default"
+              value={backendUrl}
+              onChange={(e) => setBackendUrl(e.target.value)}
+              className="flex-1 px-4 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
+            <button
+              onClick={handleSaveBackendUrl}
+              className="px-4 py-2 text-xs font-semibold rounded-xl bg-brand-600 hover:bg-brand-500 text-white transition shadow-sm"
+            >
+              Save URL
+            </button>
+            <button
+              onClick={handleResetDefault}
+              className="px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition"
+            >
+              Reset Default
+            </button>
+          </div>
+          {savedSuccess && (
+            <p className="text-xs text-emerald-500 font-medium">
+              ✓ Backend configuration updated and persisted.
+            </p>
+          )}
+          <p className="text-[11px] text-slate-400">
+            When you deploy your backend to Render or another cloud host, paste your live Web Service URL here to direct all frontend requests to it.
+          </p>
         </div>
       </div>
 
